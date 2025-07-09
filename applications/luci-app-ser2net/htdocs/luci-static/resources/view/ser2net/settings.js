@@ -45,6 +45,8 @@ return view.extend({
 		o.value(38400);
 		o.value(57600);
 		o.value(115200);
+		o.value(230400);
+		o.value(460800);
 		o.default = 9600;
 
 		o = s.option(form.ListValue, "databits", _("Data bits"));
