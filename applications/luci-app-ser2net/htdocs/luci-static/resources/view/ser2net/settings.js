@@ -30,6 +30,21 @@ return view.extend({
 		o.rmempty = false;
 		o.default = 2000;
 
+		// UDP 配置部分
+		s = m.section(form.TypedSection, "udp", _("UDP Settings"));
+		s.anonymous = true;
+
+		o = s.option(form.Flag, "enabled", _("Enabled"));
+		o.rmempty = false;
+
+		o = s.option(form.Value, "host", _("Binding address"), _("The network to listen from for UDP."));
+		o.rmempty = false;
+		o.default = "0.0.0.0";
+
+		o = s.option(form.Value, "port", _("UDP port"), _("The UDP port to listen on."));
+		o.rmempty = false;
+		o.default = 2001;
+
 		//default
 		s = m.section(form.TypedSection, "default", _("Default settings"));
 		s.anonymous = true;
