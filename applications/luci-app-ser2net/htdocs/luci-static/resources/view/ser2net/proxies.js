@@ -15,7 +15,7 @@ return view.extend({
 		o = s.option(form.Flag, "enabled", _("Enabled"));
 		o.rmempty = false;
 
-		o = s.option(form.Value, "port", _("Service port"), _("The TCP port to listen on."));
+		o = s.option(form.Value, "port", _("Service port"), _("The TCP/UDP port to listen on."));
 		o.rmempty = false;
 		o.default = 5000;
 
@@ -24,6 +24,7 @@ return view.extend({
 		o.value("raw", _("Raw"));
 		o.value("rawlp", _("Rawlp"));
 		o.value("telnet", _("Telnet"));
+		o.value("udp", _("UDP"));  // 新增 UDP 协议选项
 		o.value("off", _("Off"));
 		o.default = "raw";
 
@@ -69,6 +70,11 @@ return view.extend({
 		o.value(1);
 		o.value(2);
 		o.default = 1;
+
+		// 新增 UDP 绑定地址选项（仅当协议为 UDP 时生效）
+		o = s.option(form.Value, "udp_bind", _("UDP Bind Address"), _("The IP address to bind UDP to (default: 0.0.0.0)."));
+		o.depends("protocol", "udp");
+		o.default = "0.0.0.0";
 
 		s.option(form.Flag, "rtscts", _("Use RTS and CTS lines"));
 		s.option(form.Flag, "local", _("Ignore modem control signals"));
