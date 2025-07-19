@@ -3,91 +3,109 @@
 'require form';
 
 return view.extend({
-	render: function() {
-		var m, s, o;
+    render: function() {
+        var m, s, o;
 
-		m = new form.Map('ser2net', 'ser2net');
+        m = new form.Map('ser2net', 'ser2net');
 
-		//ser2net
-		s = m.section(form.TypedSection, "ser2net", _("Global switch"));
-		s.anonymous = true;
+        // 全局开关
+        s = m.section(form.TypedSection, "ser2net", _("Global switch"));
+        s.anonymous = true;
 
-		o = s.option(form.Flag, "enabled", _("Enabled"));
-		o.rmempty = false;
+        o = s.option(form.Flag, "enabled", _("Enabled"));
+        o.rmempty = false;
 
-		//controlport
-		s = m.section(form.TypedSection, "controlport", _("Control port"));
-		s.anonymous = true;
+        // 控制端口
+        s = m.section(form.TypedSection, "controlport", _("Control port"));
+        s.anonymous = true;
 
-		o = s.option(form.Flag, "enabled", _("Enabled"));
-		o.rmempty = false;
+        o = s.option(form.Flag, "enabled", _("Enabled"));
+        o.rmempty = false;
 
-		o = s.option(form.Value, "host", _("Binding address"), _("The network to listen from."));
-		o.rmempty = false;
-		o.default = "localhost";
+        o = s.option(form.Value, "host", _("Binding address"), _("The network to listen from."));
+        o.rmempty = false;
+        o.default = "localhost";
 
-		o = s.option(form.Value, "port", _("Control port"), _("The TCP port to listen on."));
-		o.rmempty = false;
-		o.default = 2000;
+        o = s.option(form.Value, "port", _("Control port"), _("The TCP port to listen on."));
+        o.rmempty = false;
+        o.default = 2000;
 
-		// UDP 配置部分
-		s = m.section(form.TypedSection, "udp", _("UDP Settings"));
-		s.anonymous = true;
+        // 默认设置
+        s = m.section(form.TypedSection, "default", _("Default settings"));
+        s.anonymous = true;
 
-		o = s.option(form.Flag, "enabled", _("Enabled"));
-		o.rmempty = false;
+        o = s.option(form.ListValue, "speed", _("Baud rate"), _("The speed the device port should operate at."));
+        o.rmempty = false;
+        o.value(300);
+        o.value(1200);
+        o.value(2400);
+        o.value(4800);
+        o.value(9600);
+        o.value(19200);
+        o.value(38400);
+        o.value(57600);
+        o.value(115200);
+        o.value(230400);
+        o.value(460800);
+        o.value(921600);
+        o.default = 9600;
 
-		o = s.option(form.Value, "host", _("Binding address"), _("The network to listen from for UDP."));
-		o.rmempty = false;
-		o.default = "0.0.0.0";
+        o = s.option(form.ListValue, "databits", _("Data bits"));
+        o.rmempty = false;
+        o.value(8);
+        o.value(7);
+        o.default = 8;
 
-		o = s.option(form.Value, "port", _("UDP port"), _("The UDP port to listen on."));
-		o.rmempty = false;
-		o.default = 2001;
+        o = s.option(form.ListValue, "parity", _("Parity"));
+        o.rmempty = false;
+        o.value("none", _("None"));
+        o.value("even", _("Even"));
+        o.value("odd", _("Odd"));
+        o.default = "none";
 
-		//default
-		s = m.section(form.TypedSection, "default", _("Default settings"));
-		s.anonymous = true;
+        o = s.option(form.ListValue, "stopbits", _("Stop bits"));
+        o.rmempty = false;
+        o.value(1);
+        o.value(2);
+        o.default = 1;
 
-		o = s.option(form.ListValue, "speed", _("Baud rate"), _("The speed the device port should operate at."));
-		o.rmempty = false;
-		o.value(300);
-		o.value(1200);
-		o.value(2400);
-		o.value(4800);
-		o.value(9600);
-		o.value(19200);
-		o.value(38400);
-		o.value(57600);
-		o.value(115200);
-		o.value(230400);
-		o.value(460800);
-		o.value(921600);
-		o.default = 9600;
+        s.option(form.Flag, "rtscts", _("Use RTS and CTS lines"));
+        s.option(form.Flag, "local", _("Ignore modem control signals"));
+        s.option(form.Flag, "remctl", _("Allow the RFC 2217 protocol"));
 
-		o = s.option(form.ListValue, "databits", _("Data bits"));
-		o.rmempty = false;
-		o.value(8);
-		o.value(7);
-		o.default = 8;
+        // 新增 UDP 配置部分
+        s = m.section(form.TypedSection, "udp", _("UDP Settings"));
+        s.anonymous = true;
+        s.addremove = true;  // 允许添加多个UDP配置
 
-		o = s.option(form.ListValue, "parity", _("Parity"));
-		o.rmempty = false;
-		o.value("none", _("None"));
-		o.value("even", _("Even"));
-		o.value("odd", _("Odd"));
-		o.default = "none";
+        o = s.option(form.Flag, "enabled", _("Enabled"));
+        o.rmempty = false;
 
-		o = s.option(form.ListValue, "stopbits", _("Stop bits"));
-		o.rmempty = false;
-		o.value(1);
-		o.value(2);
-		o.default = 1;
+        o = s.option(form.Value, "port", _("UDP Port"), _("Port number to listen on (1-65535)"));
+        o.rmempty = false;
+        o.datatype = "port";
+        o.default = 5000;
 
-		s.option(form.Flag, "rtscts", _("Use RTS and CTS lines"));
-		s.option(form.Flag, "local", _("Ignore modem control signals"));
-		s.option(form.Flag, "remctl", _("Allow the RFC 2217 protocol"));
+        o = s.option(form.Value, "device", _("Serial Device"), _("Serial device path (e.g. /dev/ttyUSB0)"));
+        o.rmempty = false;
+        o.default = "/dev/ttyUSB0";
 
-		return m.render();
-	}
+        o = s.option(form.Value, "bindaddr", _("Bind Address"), _("IP address to bind to (0.0.0.0 for all interfaces)"));
+        o.rmempty = false;
+        o.default = "0.0.0.0";
+
+        o = s.option(form.Value, "timeout", _("Timeout (s)"), _("Connection timeout in seconds (0=no timeout)"));
+        o.rmempty = false;
+        o.datatype = "uinteger";
+        o.default = 0;
+
+        // 高级选项
+        o = s.option(form.Flag, "reuseaddr", _("Reuse Address"), _("Allow UDP port reuse"));
+        o.default = "1";
+
+        o = s.option(form.Flag, "broadcast", _("Allow Broadcast"), _("Allow UDP broadcast packets"));
+        o.default = "0";
+
+        return m.render();
+    }
 });
